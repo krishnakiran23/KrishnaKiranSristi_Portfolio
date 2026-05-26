@@ -1,0 +1,363 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+
+/* ─── CSS Variables ─────────────────────────────────────────────── */
+:root {
+  --bg-primary:     #080808;
+  --bg-secondary:   #0e0e0e;
+  --bg-card:        #111111;
+  --bg-elevated:    #161616;
+
+  --gold:           #c9a84c;
+  --gold-light:     #e2c97e;
+  --gold-dim:       #8a6f2e;
+  --gold-muted:     rgba(201, 168, 76, 0.12);
+
+  --text-primary:   #f0ece4;
+  --text-secondary: #8a8680;
+  --text-muted:     #454340;
+  --text-ghost:     #2a2826;
+
+  --border-subtle:  rgba(255, 255, 255, 0.06);
+  --border-card:    rgba(255, 255, 255, 0.08);
+  --border-gold:    rgba(201, 168, 76, 0.2);
+  --border-gold-bright: rgba(201, 168, 76, 0.4);
+}
+
+/* ─── Base Reset ──────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Custom Scrollbar ─────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 3px;
+}
+::-webkit-scrollbar-track {
+  background: #080808;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(201, 168, 76, 0.4);
+  border-radius: 2px;
+}
+
+/* ─── Selection ─────────────────────────────────────────────────── */
+::selection {
+  background: rgba(201, 168, 76, 0.2);
+  color: #f0ece4;
+}
+
+/* ─── Typography ─────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+/* ─── Gradient Text ──────────────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #e2c97e 0%, #c9a84c 50%, #9a7a2e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-subtle {
+  background: linear-gradient(135deg, #c9a84c 0%, #a07a2e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Glassmorphism ──────────────────────────────────────────────── */
+.glass-card {
+  background: rgba(255, 255, 255, 0.025);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.glass-card:hover {
+  border-color: rgba(201, 168, 76, 0.18);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(201, 168, 76, 0.06);
+  transform: translateY(-2px);
+}
+
+/* ─── Background Grid ────────────────────────────────────────────── */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+
+.bg-dot-grid {
+  background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* ─── Gold Glow ──────────────────────────────────────────────────── */
+.glow-gold {
+  box-shadow: 0 0 20px rgba(201, 168, 76, 0.2), 0 0 60px rgba(201, 168, 76, 0.08);
+}
+
+.glow-text-gold {
+  text-shadow: 0 0 30px rgba(201, 168, 76, 0.4);
+}
+
+/* ─── Ambient Glow ───────────────────────────────────────────────── */
+.ambient-gold {
+  position: relative;
+  overflow: hidden;
+}
+
+.ambient-gold::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  left: -10%;
+  width: 120%;
+  height: 80%;
+  background: radial-gradient(ellipse at 50% 0%, rgba(201, 168, 76, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ─── Section Layout ─────────────────────────────────────────────── */
+.section {
+  padding: 120px 0;
+  position: relative;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ─── Section Label ──────────────────────────────────────────────── */
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  background: rgba(201, 168, 76, 0.08);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 100px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #c9a84c;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+/* ─── Tech Badge ─────────────────────────────────────────────────── */
+.tech-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #6b6763;
+  transition: all 0.2s ease;
+}
+
+.tech-badge:hover {
+  background: rgba(201, 168, 76, 0.08);
+  border-color: rgba(201, 168, 76, 0.25);
+  color: #c9a84c;
+}
+
+/* ─── Scroll Progress ────────────────────────────────────────────── */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, #8a6f2e, #c9a84c, #e2c97e);
+  z-index: 1000;
+  transition: width 0.1s linear;
+}
+
+/* ─── Metric Card ────────────────────────────────────────────────── */
+.metric-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.35), transparent);
+}
+
+.metric-card:hover {
+  border-color: rgba(201, 168, 76, 0.18);
+  transform: translateY(-3px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+/* ─── Divider ────────────────────────────────────────────────────── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+  margin: 0;
+}
+
+/* ─── Gold Line Accent ───────────────────────────────────────────── */
+.gold-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.4), transparent);
+}
+
+/* ─── Floating Animation ─────────────────────────────────────────── */
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.float-gentle {
+  animation: float-gentle 8s ease-in-out infinite;
+}
+
+/* ─── Shimmer ────────────────────────────────────────────────────── */
+@keyframes shimmer-gold {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ─── Button Styles ──────────────────────────────────────────────── */
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: rgba(201, 168, 76, 0.1);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  border-radius: 10px;
+  color: #c9a84c;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-gold:hover {
+  background: rgba(201, 168, 76, 0.15);
+  border-color: rgba(201, 168, 76, 0.55);
+  color: #e2c97e;
+  box-shadow: 0 0 24px rgba(201, 168, 76, 0.12);
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #c9a84c;
+  border: 1px solid #c9a84c;
+  border-radius: 10px;
+  color: #080808;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  background: #e2c97e;
+  border-color: #e2c97e;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 30px rgba(201, 168, 76, 0.25);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: rgba(240, 236, 228, 0.5);
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: rgba(240, 236, 228, 0.85);
+  transform: translateY(-1px);
+}
+
+/* ─── Timeline ───────────────────────────────────────────────────── */
+.timeline-line {
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg, rgba(201, 168, 76, 0.3), rgba(201, 168, 76, 0.1), transparent);
+}
+
+/* ─── Custom cursor ──────────────────────────────────────────────── */
+@media (hover: none) {
+  .custom-cursor { display: none; }
+}
+
+/* ─── Noise texture ──────────────────────────────────────────────── */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 9997;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .section { padding: 80px 0; }
+}
