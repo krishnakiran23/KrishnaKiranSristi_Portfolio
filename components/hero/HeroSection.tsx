@@ -128,7 +128,7 @@ const ctaButtons = [
   {
     label: 'Download Resume',
     icon: <Download size={14} />,
-    href: '/resume.pdf',
+    href: '/KrishnaKiranSristi_DS.pdf',
     style: 'primary',
     download: true,
   },
