@@ -28,9 +28,6 @@ npm run build
 npm start
 ```
 
-### GitHub Pages / Other
-
-Run `npm run build` and deploy the `.next` folder.
 
 ## 📁 Project Structure
 
