@@ -1,72 +1,57 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { SiGithub } from 'react-icons/si'
-import { SiLeetcode } from 'react-icons/si'
+import { useEffect, useRef, useState, useMemo } from 'react'
+import { motion } from 'framer-motion'
+import { SiGithub, SiLeetcode } from 'react-icons/si'
 import { Download, Mail, ArrowDown, Linkedin } from 'lucide-react'
+import MagneticButton from '@/components/ui/MagneticButton'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { Points, PointMaterial } from '@react-three/drei'
+import * as THREE from 'three'
 
-// Subtle ambient grid canvas — classy, not flashy
-function AmbientCanvas() {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    const resize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+// 3D Particle Network representing ML models/data points
+function ParticleNetwork() {
+  const ref = useRef<THREE.Points>(null)
+  
+  const sphere = useMemo(() => {
+    const count = 800
+    const points = new Float32Array(count * 3)
+    for (let i = 0; i < count; i++) {
+      // Generate points inside a sphere for a clustered look
+      const r = 2.5 * Math.cbrt(Math.random())
+      const theta = Math.random() * 2 * Math.PI
+      const phi = Math.acos(2 * Math.random() - 1)
+      
+      points[i * 3] = r * Math.sin(phi) * Math.cos(theta)
+      points[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta)
+      points[i * 3 + 2] = r * Math.cos(phi)
     }
-    resize()
-    window.addEventListener('resize', resize)
-
-    // Slow-moving very subtle orbs
-    const orbs = Array.from({ length: 3 }, (_, i) => ({
-      x: [0.2, 0.8, 0.5][i] * window.innerWidth,
-      y: [0.3, 0.2, 0.7][i] * window.innerHeight,
-      vx: (Math.random() - 0.5) * 0.15,
-      vy: (Math.random() - 0.5) * 0.15,
-      r: [400, 350, 300][i],
-    }))
-
-    let animId: number
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-      orbs.forEach((orb) => {
-        orb.x += orb.vx
-        orb.y += orb.vy
-        if (orb.x < -orb.r) orb.x = canvas.width + orb.r
-        if (orb.x > canvas.width + orb.r) orb.x = -orb.r
-        if (orb.y < -orb.r) orb.y = canvas.height + orb.r
-        if (orb.y > canvas.height + orb.r) orb.y = -orb.r
-
-        const g = ctx.createRadialGradient(orb.x, orb.y, 0, orb.x, orb.y, orb.r)
-        g.addColorStop(0, 'rgba(201, 168, 76, 0.04)')
-        g.addColorStop(1, 'rgba(201, 168, 76, 0)')
-        ctx.beginPath()
-        ctx.arc(orb.x, orb.y, orb.r, 0, Math.PI * 2)
-        ctx.fillStyle = g
-        ctx.fill()
-      })
-
-      animId = requestAnimationFrame(animate)
-    }
-    animate()
-
-    return () => {
-      cancelAnimationFrame(animId)
-      window.removeEventListener('resize', resize)
-    }
+    return points
   }, [])
 
-  return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />
+  useFrame((state, delta) => {
+    if (ref.current) {
+      ref.current.rotation.x -= delta / 15
+      ref.current.rotation.y -= delta / 20
+    }
+  })
+
+  return (
+    <group rotation={[0, 0, Math.PI / 6]}>
+      <Points ref={ref} positions={sphere} stride={3} frustumCulled={false}>
+        <PointMaterial
+          transparent
+          color="#c9a84c"
+          size={0.015}
+          sizeAttenuation={true}
+          depthWrite={false}
+          opacity={0.6}
+        />
+      </Points>
+    </group>
+  )
 }
 
-// Subtle mouse-follow warm glow
 function MouseGlow() {
   const [pos, setPos] = useState({ x: -999, y: -999 })
 
@@ -77,27 +62,24 @@ function MouseGlow() {
   }, [])
 
   return (
-    <motion.div
-      className="absolute inset-0 pointer-events-none overflow-hidden"
-    >
+    <motion.div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
       <motion.div
         animate={{ x: pos.x - 300, y: pos.y - 300 }}
-        transition={{ type: 'spring', stiffness: 60, damping: 30, mass: 1.5 }}
+        transition={{ type: 'spring', stiffness: 50, damping: 25, mass: 1 }}
         className="absolute w-[600px] h-[600px] rounded-full pointer-events-none"
         style={{
-          background: 'radial-gradient(circle, rgba(201,168,76,0.05) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 60%)',
         }}
       />
     </motion.div>
   )
 }
 
-// Elegant typewriter — single clean phrase that changes
 const phrases = [
   'Building Production-Grade AI Systems.',
-  'Engineering Scalable ML Platforms.',
-  'Transforming Data into Intelligence.',
-  'Deploying GenAI for the Real World.',
+  'Architecting Scalable MLOps Pipelines.',
+  'Deploying LLMs & RAG for Real-World Impact.',
+  'Engineering Cloud-Native AI Infrastructures.',
 ]
 
 function TypewriterText() {
@@ -136,8 +118,8 @@ function TypewriterText() {
       <motion.span
         animate={{ opacity: [1, 0, 1] }}
         transition={{ duration: 0.9, repeat: Infinity }}
-        className="inline-block w-px h-7 md:h-9 ml-0.5 align-middle"
-        style={{ background: '#c9a84c' }}
+        className="inline-block w-[2px] h-7 md:h-9 ml-1 align-middle"
+        style={{ background: '#c9a84c', boxShadow: '0 0 8px rgba(201, 168, 76, 0.6)' }}
       />
     </span>
   )
@@ -181,7 +163,7 @@ export default function HeroSection() {
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
-    const t = setTimeout(() => setLoaded(true), 200)
+    const t = setTimeout(() => setLoaded(true), 150)
     return () => clearTimeout(t)
   }, [])
 
@@ -191,24 +173,25 @@ export default function HeroSection() {
       className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
       style={{ background: '#080808' }}
     >
-      {/* Subtle grid */}
-      <div className="absolute inset-0 bg-grid opacity-100" />
+      {/* 3D Background */}
+      <div className="absolute inset-0 z-0 opacity-60">
+        <Canvas camera={{ position: [0, 0, 4] }}>
+          <ParticleNetwork />
+        </Canvas>
+      </div>
 
-      {/* Top vignette gradient */}
+      <div className="absolute inset-0 bg-grid opacity-100 z-0 pointer-events-none" />
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="absolute inset-0 pointer-events-none z-0"
         style={{
-          background:
-            'radial-gradient(ellipse 100% 60% at 50% 0%, rgba(201,168,76,0.05) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse 100% 60% at 50% 0%, rgba(201,168,76,0.06) 0%, transparent 70%)',
         }}
       />
-
-      <AmbientCanvas />
       <MouseGlow />
 
       {/* Main content */}
-      <div className="relative z-10 container mx-auto px-6 text-center max-w-4xl">
-
+      <div className="relative z-10 container mx-auto px-6 text-center max-w-5xl">
+        
         {/* Status badge */}
         <motion.div
           initial={{ opacity: 0, y: -12 }}
@@ -217,23 +200,23 @@ export default function HeroSection() {
           className="flex items-center justify-center mb-10"
         >
           <div
-            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full"
+            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full glass-card hover:bg-white/5 transition-colors cursor-default"
             style={{
-              background: 'rgba(201,168,76,0.06)',
-              border: '1px solid rgba(201,168,76,0.2)',
+              border: '1px solid rgba(201,168,76,0.25)',
               fontFamily: "'JetBrains Mono', monospace",
               fontSize: '11px',
-              color: '#8a7040',
+              color: '#c9a84c',
               letterSpacing: '0.08em',
+              boxShadow: '0 0 20px rgba(201,168,76,0.1)'
             }}
           >
             <motion.span
-              animate={{ opacity: [1, 0.4, 1] }}
-              transition={{ duration: 2.5, repeat: Infinity }}
+              animate={{ opacity: [1, 0.3, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
               className="w-1.5 h-1.5 rounded-full"
-              style={{ background: '#c9a84c' }}
+              style={{ background: '#e2c97e', boxShadow: '0 0 10px #e2c97e' }}
             />
-            NYC — New Grad (May 2026) • Available for Full-Time Roles
+            System Status: Ready for Production • New Grad (May 2026)
           </div>
         </motion.div>
 
@@ -244,17 +227,17 @@ export default function HeroSection() {
           transition={{ duration: 0.9, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
         >
           <h1
-            className="font-bold mb-5 leading-none tracking-tight"
+            className="font-bold mb-6 leading-none tracking-tight"
             style={{
               fontFamily: "'Space Grotesk', sans-serif",
-              fontSize: 'clamp(44px, 9vw, 96px)',
+              fontSize: 'clamp(48px, 10vw, 108px)',
               color: '#f0ece4',
             }}
           >
             Krishna{' '}
             <span
               style={{
-                background: 'linear-gradient(135deg, #e2c97e 0%, #c9a84c 60%, #9a7a2e 100%)',
+                background: 'linear-gradient(135deg, #fcedba 0%, #c9a84c 40%, #8a6f2e 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
@@ -267,26 +250,27 @@ export default function HeroSection() {
 
         {/* Role code line */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={loaded ? { opacity: 1, y: 0 } : {}}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={loaded ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 0.7, delay: 0.6 }}
-          className="flex justify-center mb-6"
+          className="flex justify-center mb-8"
         >
           <div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg backdrop-blur-md"
             style={{
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(255,255,255,0.07)',
+              background: 'rgba(255,255,255,0.02)',
+              border: '1px solid rgba(255,255,255,0.08)',
               fontFamily: "'JetBrains Mono', monospace",
-              fontSize: 'clamp(10px, 1.3vw, 13px)',
-              color: '#3d3d3d',
+              fontSize: 'clamp(11px, 1.4vw, 14px)',
+              color: '#4a4a4a',
+              boxShadow: 'inset 0 0 20px rgba(255,255,255,0.01)'
             }}
           >
-            <span style={{ color: '#c9a84c', opacity: 0.6 }}>const</span>&nbsp;
-            <span style={{ color: '#b5b1a8' }}>role</span>&nbsp;
-            <span style={{ color: '#3d3d3d' }}>=</span>&nbsp;
-            <span style={{ color: '#8a8680' }}>
-              &quot;Data Scientist │ ML Engineer │ GenAI Engineer&quot;
+            <span style={{ color: '#c9a84c', opacity: 0.8 }}>const</span>&nbsp;
+            <span style={{ color: '#e2c97e' }}>engineer</span>&nbsp;
+            <span style={{ color: '#6b6763' }}>=</span>&nbsp;
+            <span style={{ color: '#a39f98' }}>
+              &quot;AI Architect │ MLOps │ GenAI&quot;
             </span>
           </div>
         </motion.div>
@@ -296,15 +280,15 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 16 }}
           animate={loaded ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, delay: 0.8 }}
-          className="mb-7"
+          className="mb-8"
         >
           <h2
             style={{
               fontFamily: "'Space Grotesk', sans-serif",
-              fontSize: 'clamp(16px, 2.8vw, 28px)',
+              fontSize: 'clamp(18px, 3vw, 32px)',
               fontWeight: 400,
               color: '#f0ece4',
-              minHeight: '44px',
+              minHeight: '48px',
               letterSpacing: '-0.01em',
             }}
           >
@@ -317,17 +301,18 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 16 }}
           animate={loaded ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, delay: 1.0 }}
-          className="mb-10 mx-auto"
+          className="mb-12 mx-auto"
           style={{
-            maxWidth: '580px',
+            maxWidth: '640px',
             color: '#a39f98',
-            fontSize: 'clamp(14px, 1.6vw, 17px)',
+            fontSize: 'clamp(15px, 1.7vw, 18px)',
             lineHeight: 1.8,
             fontWeight: 400,
+            letterSpacing: '0.01em'
           }}
         >
-          Recent graduate (May 2026) with ~1 year of hands-on experience bridging the gap between advanced ML models and scalable production. 
-          I architect end-to-end ML pipelines, LLMs, and RAG systems to build intelligent applications that deliver real-world business impact.
+          Bridging the gap between advanced Machine Learning models and scalable production environments. 
+          I engineer end-to-end AI pipelines, LLMs, and intelligent infrastructure that drive real-world business outcomes.
         </motion.p>
 
         {/* CTA Buttons */}
@@ -335,66 +320,50 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 16 }}
           animate={loaded ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, delay: 1.15 }}
-          className="flex flex-wrap items-center justify-center gap-3 mb-16"
+          className="flex flex-wrap items-center justify-center gap-4 mb-16"
         >
           {ctaButtons.map((btn, i) => (
-            <motion.a
+            <motion.div
               key={btn.label}
-              href={btn.href}
-              download={btn.download}
-              target={btn.href.startsWith('http') ? '_blank' : undefined}
-              rel={btn.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-              whileHover={{ scale: 1.03, y: -2 }}
-              whileTap={{ scale: 0.98 }}
-              initial={{ opacity: 0, y: 8 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={loaded ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.4, delay: 1.2 + i * 0.06 }}
-              className="inline-flex items-center gap-2 rounded-xl font-medium text-sm cursor-pointer no-underline"
-              style={
-                btn.style === 'primary'
-                  ? {
-                      padding: '11px 22px',
-                      background: '#c9a84c',
-                      border: '1px solid #c9a84c',
-                      color: '#080808',
-                      fontWeight: 600,
-                    }
-                  : btn.style === 'secondary'
-                  ? {
-                      padding: '11px 18px',
-                      background: 'rgba(255,255,255,0.04)',
-                      border: '1px solid rgba(255,255,255,0.09)',
-                      color: '#b5b1a8',
-                    }
-                  : {
-                      padding: '11px 18px',
-                      background: 'transparent',
-                      border: '1px solid rgba(255,255,255,0.06)',
-                      color: '#a39f98',
-                    }
-              }
+              transition={{ duration: 0.4, delay: 1.2 + i * 0.08 }}
             >
-              {btn.icon}
-              <span>{btn.label}</span>
-            </motion.a>
+              <MagneticButton
+                href={btn.href}
+                download={btn.download}
+                target={btn.href.startsWith('http') ? '_blank' : undefined}
+                rel={btn.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                className={
+                  btn.style === 'primary' ? 'btn-primary' : 
+                  btn.style === 'secondary' ? 'btn-secondary' : 
+                  'btn-secondary border-transparent bg-transparent hover:bg-white/5'
+                }
+                style={btn.style === 'primary' ? { padding: '14px 28px', fontSize: '15px' } : undefined}
+              >
+                {btn.icon}
+                <span>{btn.label}</span>
+              </MagneticButton>
+            </motion.div>
           ))}
         </motion.div>
-
-
       </div>
 
       {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={loaded ? { opacity: 1 } : {}}
-        transition={{ duration: 1, delay: 2 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        transition={{ duration: 1, delay: 2.2 }}
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-10"
       >
+        <div style={{ fontSize: '10px', color: '#6b6763', fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+          Scroll to explore
+        </div>
         <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <ArrowDown size={16} style={{ color: '#737069' }} />
+          <ArrowDown size={18} style={{ color: '#c9a84c', opacity: 0.7 }} />
         </motion.div>
       </motion.div>
     </section>
