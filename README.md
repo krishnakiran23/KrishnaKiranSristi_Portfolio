@@ -71,9 +71,6 @@ portfolio/
 - Cinematic loading screen
 - Scroll progress indicator
 
-## 📄 Adding Your Resume
-
-Place your resume PDF at: `public/resume.pdf`
 
 ## 🔗 Links
 
