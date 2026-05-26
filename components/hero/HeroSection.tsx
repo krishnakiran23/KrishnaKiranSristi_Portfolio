@@ -76,10 +76,9 @@ function MouseGlow() {
 }
 
 const phrases = [
-  'Building Production-Grade AI Systems.',
-  'Architecting Scalable MLOps Pipelines.',
-  'Deploying LLMs & RAG for Real-World Impact.',
-  'Engineering Cloud-Native AI Infrastructures.',
+  'Building production-grade AI systems with cloud-native ML infrastructure.',
+  'Engineering scalable GenAI and MLOps systems for real-world deployment.',
+  'Deploying intelligent systems from experimentation to production.',
 ]
 
 function TypewriterText() {
@@ -270,7 +269,7 @@ export default function HeroSection() {
             <span style={{ color: '#e2c97e' }}>engineer</span>&nbsp;
             <span style={{ color: '#6b6763' }}>=</span>&nbsp;
             <span style={{ color: '#a39f98' }}>
-              &quot;AI Architect │ MLOps │ GenAI&quot;
+              &quot;AI Engineer │ GenAI & MLOps&quot;
             </span>
           </div>
         </motion.div>
@@ -303,7 +302,7 @@ export default function HeroSection() {
           transition={{ duration: 0.7, delay: 1.0 }}
           className="mb-12 mx-auto"
           style={{
-            maxWidth: '640px',
+            maxWidth: '680px',
             color: '#a39f98',
             fontSize: 'clamp(15px, 1.7vw, 18px)',
             lineHeight: 1.8,
@@ -311,8 +310,7 @@ export default function HeroSection() {
             letterSpacing: '0.01em'
           }}
         >
-          Bridging the gap between advanced Machine Learning models and scalable production environments. 
-          I engineer end-to-end AI pipelines, LLMs, and intelligent infrastructure that drive real-world business outcomes.
+          Specializing in end-to-end MLOps, AWS SageMaker deployments, and scalable LLM architectures. I bridge the gap between experimental models and robust, serverless production inference APIs.
         </motion.p>
 
         {/* CTA Buttons */}

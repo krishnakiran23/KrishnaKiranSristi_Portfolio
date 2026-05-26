@@ -5,6 +5,7 @@ import CustomCursor from '@/components/ui/CustomCursor'
 import FloatingDock from '@/components/ui/FloatingDock'
 import LoadingScreen from '@/components/ui/LoadingScreen'
 import HeroSection from '@/components/hero/HeroSection'
+import MetricsStrip from '@/components/ui/MetricsStrip'
 import BentoAbout from '@/components/about/BentoAbout'
 import ExperienceTimeline from '@/components/experience/ExperienceTimeline'
 import SkillsSection from '@/components/skills/SkillsSection'
@@ -26,6 +27,7 @@ export default function Home() {
       {/* Main content */}
       <main>
         <HeroSection />
+        <MetricsStrip />
         <BentoAbout />
         <ExperienceTimeline />
         <SkillsSection />

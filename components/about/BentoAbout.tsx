@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { MapPin, Mail, Briefcase, GraduationCap, Zap } from 'lucide-react'
+import CurrentlyExploring from './CurrentlyExploring'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -220,6 +221,10 @@ export default function BentoAbout() {
               ))}
             </div>
           </motion.div>
+
+          <div style={{ gridColumn: 'span 12' }}>
+            <CurrentlyExploring />
+          </div>
         </div>
       </div>
     </section>
