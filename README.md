@@ -28,15 +28,6 @@ npm run build
 npm start
 ```
 
-## 🌐 Deployment
-
-### Vercel (Recommended)
-
-1. Push to GitHub
-2. Import the repository in [Vercel](https://vercel.com)
-3. Set **Install Command** to: `npm install --legacy-peer-deps`
-4. Deploy
-
 ### GitHub Pages / Other
 
 Run `npm run build` and deploy the `.next` folder.
