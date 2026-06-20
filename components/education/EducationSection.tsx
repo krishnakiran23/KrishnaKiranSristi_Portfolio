@@ -14,6 +14,7 @@ const education = [
     flag: '🇺🇸',
     highlight: 'Expected May 2026',
     courses: ['Machine Learning', 'Deep Learning', 'Big Data Analytics', 'Statistical Inference', 'NLP'],
+  },
 ]
 
 export default function EducationSection() {
