@@ -156,7 +156,7 @@ export default function BentoAbout() {
           {/* Stats */}
           {[
             { value: '~1', label: 'Year Industry XP', icon: <Briefcase size={14} /> },
-            { value: '2', label: 'CS/DS Degrees', icon: <GraduationCap size={14} /> },
+            { value: '1', label: 'CS/DS Degree', icon: <GraduationCap size={14} /> },
             { value: '3.8', label: 'Masters GPA', icon: <Zap size={14} /> },
           ].map((stat, i) => (
             <motion.div

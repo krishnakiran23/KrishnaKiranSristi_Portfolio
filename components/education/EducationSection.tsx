@@ -14,17 +14,6 @@ const education = [
     flag: '🇺🇸',
     highlight: 'Expected May 2026',
     courses: ['Machine Learning', 'Deep Learning', 'Big Data Analytics', 'Statistical Inference', 'NLP'],
-  },
-  {
-    school: 'VNR VJIET',
-    location: 'Hyderabad, India',
-    degree: 'B.Tech in Computer Science',
-    duration: 'Aug 2020 – Apr 2024',
-    gpa: '9.0 / 10.0',
-    flag: '🇮🇳',
-    highlight: 'Honours Graduate',
-    courses: ['Data Structures', 'Algorithms', 'Database Systems', 'OS', 'Software Engineering'],
-  },
 ]
 
 export default function EducationSection() {
@@ -66,7 +55,7 @@ export default function EducationSection() {
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 max-w-2xl mx-auto gap-5">
           {education.map((edu, i) => (
             <motion.div
               key={edu.school}
